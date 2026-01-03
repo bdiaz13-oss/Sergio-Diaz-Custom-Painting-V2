@@ -1,0 +1,9 @@
+Hi {{ user.name }},
+
+Your referral code is ready: {{ code }}
+
+Share the link below with friends:
+{{ url_for('index', _external=True) }}?ref={{ code }}
+
+Thanks for helping spread the word!
+— Sergio Diaz Custom Painting

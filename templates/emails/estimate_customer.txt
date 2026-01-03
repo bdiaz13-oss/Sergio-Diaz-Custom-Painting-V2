@@ -1,0 +1,14 @@
+Hi {{ estimate.full_name }},
+
+Thanks — we received your estimate request. We'll review your project and contact you to schedule an on-site estimate.
+
+Summary of your request:
+Address: {{ estimate.address.street }}, {{ estimate.address.city }}, {{ estimate.address.state }} {{ estimate.address.postal }}
+Budget: {{ estimate.budget or "N/A" }}
+Preferred date: {{ estimate.preferred_date or "N/A" }}
+Referral code: {{ estimate.referral_code or "N/A" }}
+
+Project description:
+{{ estimate.description }}
+
+— Sergio Diaz Custom Painting

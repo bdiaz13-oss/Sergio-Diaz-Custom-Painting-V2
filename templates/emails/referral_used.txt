@@ -1,0 +1,8 @@
+Good news — your referral was used!
+
+Referral code: {{ ref_code }}
+Used by: {{ customer_name }}
+
+Thanks for sharing! Check your dashboard to see referral status and credits.
+
+— Sergio Diaz Custom Painting

@@ -1,0 +1,104 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h1 class="h3">Dashboard</h1>
+    {% if user %}
+      <p class="lead">Welcome, {{ user.name }}!</p>
+    {% else %}
+      <p class="lead">Welcome to Sergio Diaz Custom Painting — home of quality, custom painting. Consider signing up for referral perks.</p>
+    {% endif %}
+  </div>
+  <div>
+    <a href="{{ url_for('request_estimate') }}" class="btn btn-success me-2">Request Estimate</a>
+    {% if user %}
+      <button class="btn btn-outline-light" id="newReferralBtn">Generate Referral Code</button>
+    {% endif %}
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <h4>Recent Examples</h4>
+    <div class="row">
+      {% for ex in examples[:3] %}
+      <div class="col-md-6 mb-3">
+        <div class="card">
+          {% if ex.file or ex.s3_key or ex.image_url %}
+            {% set media_url = get_media_url(ex) %}
+            {% if ex.duration %}
+              <video class="card-img-top" controls>
+                <source src="{{ media_url }}" type="video/mp4">
+              </video>
+            {% else %}
+              <img src="{{ get_thumb_url(ex) or media_url }}" class="card-img-top" alt="{{ ex.title }}">
+            {% endif %}
+          {% else %}
+            <img src="https://via.placeholder.com/600x400?text=No+preview" class="card-img-top" alt="No preview">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">{{ ex.title }}</h5>
+            <p class="card-text">{{ ex.description }}</p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <h4 class="mt-4">Testimonials</h4>
+    {% for t in testimonials[:3] %}
+      <div class="card mb-2">
+        <div class="card-body">
+          <p class="mb-1">{{ t.text }}</p>
+          {% if t.video_url %}
+            <div><a href="{{ t.video_url }}" target="_blank">Watch video</a></div>
+          {% endif %}
+          <small class="text-muted">{{ t.created_at }}</small>
+        </div>
+      </div>
+    {% else %}
+      <p>No testimonials yet.</p>
+    {% endfor %}
+  </div>
+
+  <div class="col-md-4">
+    <div class="card mb-3">
+      <div class="card-header">Referral Codes</div>
+      <div class="card-body">
+        {% if not user %}
+          <p>Sign up and log in to create referral codes and earn credits when friends use them.</p>
+        {% else %}
+          <p>Create and manage your referral codes. Share the code or link with friends.</p>
+          <div id="referralList">
+            {% if referrals %}
+              <ul class="list-group">
+                {% for r in referrals %}
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                      <strong>{{ r.code }}</strong><br>
+                      <small class="text-muted">{{ r.created_at }} &middot; uses: {{ r.uses }}/{{ r.max_uses }}</small>
+                    </div>
+                    <div>
+                      <button class="btn btn-sm btn-outline-primary copy-code" data-code="{{ r.code }}">Copy</button>
+                    </div>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="mb-0">No referral codes yet. Click "Generate Referral Code" to create one.</p>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Quick Links</div>
+      <div class="card-body">
+        <a href="{{ url_for('examples') }}" class="btn btn-sm btn-secondary mb-2">View Examples</a>
+        <a href="{{ url_for('testimonials') }}" class="btn btn-sm btn-secondary mb-2">View Testimonials</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

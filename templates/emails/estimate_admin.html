@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+  <body>
+    <h3>New estimate request</h3>
+    <p><strong>{{ estimate.full_name }}</strong> — <a href="mailto:{{ estimate.email }}">{{ estimate.email }}</a></p>
+    <p>
+      {{ estimate.address.street }}<br>
+      {{ estimate.address.city }}, {{ estimate.address.state }} {{ estimate.address.postal }}
+    </p>
+    <p><strong>Budget:</strong> {{ estimate.budget or "N/A" }}<br>
+    <strong>Preferred date:</strong> {{ estimate.preferred_date or "N/A" }}<br>
+    <strong>Referral:</strong> {{ estimate.referral_code or "N/A" }} ({{ estimate.discount_applied_percent or 0 }}% discount)</p>
+    <h4>Project description</h4>
+    <p>{{ estimate.description }}</p>
+    <p>Submitted at: {{ estimate.created_at }}</p>
+  </body>
+</html>

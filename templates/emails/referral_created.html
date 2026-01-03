@@ -1,0 +1,10 @@
+<!doctype html>
+<html>
+  <body>
+    <p>Hi {{ user.name }},</p>
+    <p>Your referral code is ready: <strong>{{ code }}</strong></p>
+    <p>Share this link with friends: <a href="{{ url_for('index', _external=True) }}?ref={{ code }}">{{ url_for('index', _external=True) }}?ref={{ code }}</a></p>
+    <p>Thanks for helping spread the word!</p>
+    <p>— Sergio Diaz Custom Painting</p>
+  </body>
+</html>

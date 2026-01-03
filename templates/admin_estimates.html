@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Admin - Estimate Requests</h2>
+<form class="row g-2 mb-3" method="get">
+  <div class="col-auto">
+    <input class="form-control" name="q" placeholder="Search name or email" value="{{ request.args.get('q','') }}">
+  </div>
+  <div class="col-auto">
+    <select class="form-select" name="status">
+      <option value="all" {% if request.args.get('status','all')=='all' %}selected{% endif %}>All</option>
+      <option value="submitted" {% if request.args.get('status')=='submitted' %}selected{% endif %}>Submitted</option>
+      <option value="processed" {% if request.args.get('status')=='processed' %}selected{% endif %}>Processed</option>
+    </select>
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-primary">Filter</button>
+  </div>
+</form>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>When</th>
+      <th>Name / Email</th>
+      <th>Address</th>
+      <th>Budget / Preferred</th>
+      <th>Referral</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for e in estimates %}
+    <tr>
+      <td>{{ e.created_at }}</td>
+      <td>
+        <strong>{{ e.full_name }}</strong><br>
+        <a href="mailto:{{ e.email }}">{{ e.email }}</a><br>
+        {{ e.phone }}
+      </td>
+      <td>{{ e.address.street }}<br>{{ e.address.city }}, {{ e.address.state }} {{ e.address.postal }}</td>
+      <td>{{ e.budget or 'N/A' }}<br>{{ e.preferred_date or 'N/A' }}</td>
+      <td>{{ e.referral_code or '—' }}<br>{{ e.discount_applied_percent or 0 }}%</td>
+      <td>
+        {% if e.processed %}
+          Processed at {{ e.processed_at }} by {{ e.processed_by }}
+        {% else %}
+          Submitted
+        {% endif %}
+      </td>
+      <td>
+        {% if not e.processed %}
+        <form method="post" action="{{ url_for('admin_process_estimate', eid=e.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <div class="mb-1">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="send_email" id="send_{{ e.id }}">
+              <label class="form-check-label" for="send_{{ e.id }}">Send processed email to customer</label>
+            </div>
+          </div>
+          <button class="btn btn-sm btn-success">Mark processed</button>
+        </form>
+        {% else %}
+          <span class="text-muted">—</span>
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <td colspan="7"><strong>Project details:</strong> {{ e.description }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

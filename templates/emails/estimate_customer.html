@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+  <body>
+    <p>Hi {{ estimate.full_name }},</p>
+    <p>Thanks — we received your estimate request. We'll review your project and contact you to schedule an on-site estimate.</p>
+    <h4>Request summary</h4>
+    <ul>
+      <li><strong>Address:</strong> {{ estimate.address.street }}, {{ estimate.address.city }}, {{ estimate.address.state }} {{ estimate.address.postal }}</li>
+      <li><strong>Budget:</strong> {{ estimate.budget or "N/A" }}</li>
+      <li><strong>Preferred date:</strong> {{ estimate.preferred_date or "N/A" }}</li>
+      <li><strong>Referral code:</strong> {{ estimate.referral_code or "N/A" }}</li>
+    </ul>
+    <h4>Project description</h4>
+    <p>{{ estimate.description }}</p>
+    <p>— Sergio Diaz Custom Painting</p>
+  </body>
+</html>

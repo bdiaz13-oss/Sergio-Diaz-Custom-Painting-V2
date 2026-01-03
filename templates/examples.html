@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Examples of House Paintings</h2>
+<p>Below are sample projects. Customers can upload examples (images or short mp4 videos). Uploaded items will appear after admin approval.</p>
+
+<div class="row mb-4">
+  {% for ex in examples %}
+    <div class="col-md-4 mb-3">
+      <div class="card">
+        {% if ex.processing %}
+          <div class="d-flex align-items-center justify-content-center" style="min-height:200px;">
+            <div class="text-center">
+              <div class="spinner-border text-primary" role="status" aria-hidden="true"></div>
+              <div class="mt-2"><strong>Processing...</strong></div>
+              {% if ex.processing_error %}
+                <div class="text-danger small mt-2">{{ ex.processing_error }}</div>
+              {% endif %}
+            </div>
+          </div>
+        {% else %}
+          {% if ex.file or ex.s3_key or ex.s3_display_key or ex.image_url %}
+            {% set media_url = get_media_url(ex) %}
+            {% set ext = (ex.file or ex.s3_key or ex.image_url).rsplit('.',1)[-1]|lower if (ex.file or ex.s3_key or ex.image_url) else '' %}
+            {% if ext == 'mp4' or ex.duration %}
+              <video class="card-img-top" controls>
+                <source src="{{ media_url }}" type="video/mp4">
+                Your browser does not support video.
+              </video>
+            {% else %}
+              <img src="{{ get_thumb_url(ex) or media_url }}" class="card-img-top" alt="{{ ex.title }}">
+            {% endif %}
+          {% else %}
+            <img src="https://via.placeholder.com/600x400?text=No+preview" class="card-img-top" alt="No preview">
+          {% endif %}
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ ex.title }}</h5>
+          <p class="card-text">{{ ex.description }}</p>
+          <small class="text-muted">Added {{ ex.created_at }}</small>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+{% if user %}
+  <h4>Your pending uploads</h4>
+  {% if user_pending %}
+    <div class="mb-3">
+      {% for p in user_pending %}
+        <div class="card mb-2">
+          <div class="card-body">
+            <strong>{{ p.title }}</strong> — Uploaded {{ p.created_at }}
+            {% if p.processing %}
+              <span class="badge bg-info ms-2">Processing</span>
+            {% endif %}
+            {% if p.processing_error %}
+              <div class="text-danger mt-2">Error: {{ p.processing_error }}</div>
+            {% endif %}
+            {% if p.retry_count %}
+              <div class="small text-muted mt-1">Retry attempts: {{ p.retry_count }}</div>
+            {% endif %}
+            <p>{{ p.description }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No pending uploads.</p>
+  {% endif %}
+
+  <hr>
+  <h4>Upload a new example</h4>
+  <form method="post" action="{{ url_for('examples_upload') }}" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <div class="mb-3">
+      <label class="form-label">Title</label>
+      <input class="form-control" name="title" maxlength="120">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea class="form-control" name="description" rows="3"></textarea>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Image or short MP4 video (max {{ (config.MAX_CONTENT_LENGTH // (1024*1024)) }} MB)</label>
+      <input class="form-control" type="file" name="file" accept=".png,.jpg,.jpeg,.gif,.mp4" required>
+    </div>
+    <button class="btn btn-primary">Upload for review</button>
+  </form>
+{% else %}
+  <p><a href="{{ url_for('signup') }}">Sign up</a> or <a href="{{ url_for('login') }}">log in</a> to upload examples of your project.</p>
+{% endif %}
+{% endblock %}

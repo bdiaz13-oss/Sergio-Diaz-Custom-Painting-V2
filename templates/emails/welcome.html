@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+  <body>
+    <p>Hi {{ user.name }},</p>
+    <p>Welcome to <strong>Sergio Diaz Custom Painting</strong>! Thanks for creating an account.</p>
+    <ul>
+      <li>Generate referral codes and earn credits when friends use them.</li>
+      <li>Request estimates quickly from your dashboard.</li>
+      <li>Share testimonials and project photos.</li>
+    </ul>
+    <p><a href="{{ url_for('index', _external=True) }}">Go to your dashboard</a></p>
+    <p>— Sergio Diaz Custom Painting</p>
+  </body>
+</html>

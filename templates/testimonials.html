@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Testimonials</h2>
+<p>Read feedback from customers and watch short project videos.</p>
+
+<div class="row">
+  <div class="col-md-8">
+    {% for t in testimonials %}
+      <div class="card mb-3">
+        <div class="card-body">
+          {% if t.text %}
+            <p>{{ t.text }}</p>
+          {% endif %}
+          {% if t.video_url %}
+            <p><a href="{{ t.video_url }}" target="_blank">Watch video testimonial</a></p>
+          {% endif %}
+          <small class="text-muted">{{ t.created_at }}</small>
+        </div>
+      </div>
+    {% else %}
+      <p>No testimonials yet.</p>
+    {% endfor %}
+  </div>
+
+  <div class="col-md-4">
+    {% if user %}
+      <h5>Share your experience</h5>
+      <form action="{{ url_for('add_testimonial') }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <div class="mb-2">
+          <label class="form-label">Short testimonial</label>
+          <textarea name="text" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="mb-2">
+          <label class="form-label">Video URL (YouTube, Vimeo)</label>
+          <input name="video_url" class="form-control">
+        </div>
+        <button class="btn btn-primary">Submit testimonial</button>
+      </form>
+    {% else %}
+      <p><a href="{{ url_for('signup') }}">Sign up</a> or <a href="{{ url_for('login') }}">log in</a> to share a testimonial.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

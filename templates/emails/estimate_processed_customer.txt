@@ -1,0 +1,7 @@
+Hello {{ estimate.full_name }},
+
+This is an update: your estimate request has been processed by our team.
+
+We will reach out with the next steps shortly. If you have questions, reply to this email.
+
+— Sergio Diaz Custom Painting

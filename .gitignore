@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+env/
+ENV/
+.venv/
+
+# Local data and uploads
+data/
+uploads/
+tmp/
+.env
+
+# OS files
+.DS_Store
+
+# Logs
+*.log
+
+# Python packaging
+*.egg-info/
+dist/
+build/

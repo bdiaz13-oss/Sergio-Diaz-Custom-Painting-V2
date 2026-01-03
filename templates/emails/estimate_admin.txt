@@ -1,0 +1,19 @@
+New estimate request submitted.
+
+Name: {{ estimate.full_name }}
+Email: {{ estimate.email }}
+Phone: {{ estimate.phone }}
+
+Address:
+{{ estimate.address.street }}
+{{ estimate.address.city }}, {{ estimate.address.state }} {{ estimate.address.postal }}
+
+Budget: {{ estimate.budget or "N/A" }}
+Preferred date: {{ estimate.preferred_date or "N/A" }}
+Referral code: {{ estimate.referral_code or "N/A" }}
+Discount: {{ estimate.discount_applied_percent or 0 }}%
+
+Description:
+{{ estimate.description }}
+
+Submitted at: {{ estimate.created_at }}

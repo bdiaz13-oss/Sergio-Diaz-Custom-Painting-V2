@@ -1,0 +1,12 @@
+Hi {{ user.name }},
+
+Welcome to Sergio Diaz Custom Painting! Thanks for creating an account.
+
+You can:
+- Generate referral codes and earn credits when friends use them.
+- Request estimates quickly from your dashboard.
+- Share testimonials and project photos.
+
+Visit your dashboard: {{ url_for('index', _external=True) }}
+
+— Sergio Diaz Custom Painting

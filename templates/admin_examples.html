@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+{% block content %}
+<h2>Admin - Examples Moderation</h2>
+<p>Approve or delete uploaded examples. Approved examples will appear on the public Examples page and Dashboard.</p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>When</th>
+      <th>Title / Uploader</th>
+      <th>Preview</th>
+      <th>Description</th>
+      <th>State</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for e in examples %}
+    <tr>
+      <td>{{ e.created_at }}</td>
+      <td>
+        <strong>{{ e.title }}</strong><br>
+        {% if e.uploaded_by %}
+          {% set uploader = get_user_by_id(e.uploaded_by) %}
+          Uploaded by: {{ uploader.name if uploader else e.uploaded_by }}
+        {% else %}
+          System
+        {% endif %}
+        <div class="small text-muted">Retries: {{ e.retry_count or 0 }}</div>
+      </td>
+      <td style="max-width:220px;">
+        {% if e.processing %}
+          <div class="text-center">
+            <div class="spinner-border text-primary" role="status" aria-hidden="true"></div>
+            <div class="small mt-1">Processing</div>
+            {% if e.processing_error %}
+              <div class="text-danger small mt-1">{{ e.processing_error }}</div>
+            {% endif %}
+          </div>
+        {% else %}
+          {% if e.file or e.s3_key or e.image_url %}
+            {% set media_url = get_media_url(e) %}
+            {% set ext = (e.file or e.s3_key or e.image_url).rsplit('.',1)[-1]|lower if (e.file or e.s3_key or e.image_url) else '' %}
+            {% if ext == 'mp4' or e.duration %}
+              <video style="max-width:200px;" controls>
+                <source src="{{ media_url }}" type="video/mp4">
+              </video>
+            {% else %}
+              <img src="{{ get_thumb_url(e) or media_url }}" style="max-width:200px;">
+            {% endif %}
+          {% else %}
+            <img src="https://via.placeholder.com/200x120?text=No+preview" style="max-width:200px;">
+          {% endif %}
+        {% endif %}
+      </td>
+      <td>{{ e.description }}</td>
+      <td>
+        {% if e.approved %}
+          <span class="badge bg-success">Approved</span>
+        {% elif e.processing %}
+          <span class="badge bg-info">Processing</span>
+        {% else %}
+          <span class="badge bg-warning text-dark">Pending</span>
+        {% endif %}
+        {% if e.processing_error %}
+          <div class="text-danger small mt-1">{{ e.processing_error }}</div>
+        {% endif %}
+      </td>
+      <td>
+        {% if not e.approved and not e.processing %}
+        <form method="post" action="{{ url_for('admin_examples_approve', eid=e.id) }}" style="display:inline;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <button class="btn btn-sm btn-success">Approve</button>
+        </form>
+        {% endif %}
+        <form method="post" action="{{ url_for('admin_examples_delete', eid=e.id) }}" style="display:inline;" onsubmit="return confirm('Delete this example and its file?');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <button class="btn btn-sm btn-danger">Delete</button>
+        </form>
+        {% if not e.processing %}
+        <form method="post" action="{{ url_for('admin_examples_retry', eid=e.id) }}" style="display:inline; margin-top:6px;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <button class="btn btn-sm btn-outline-secondary">Retry processing</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
