@@ -31,7 +31,7 @@ EXAMPLES_FILE = os.path.join(DATA_DIR, "examples.json")
 app = Flask(__name__)
 app.secret_key = os.environ.get("SDCP_SECRET_KEY") or secrets.token_urlsafe(32)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-app.config["MAX_CONTENT_LENGTH"] = int(os.environ.get("MAX_CONTENT_LENGTH") or 16 * 1024 * 1024)
+app.config["MAX_CONTENT_LENGTH"] = int(os.environ.get("MAX_CONTENT_LENGTH") or 40 * 1024 * 1024)
 
 # Ensure data files exist
 def ensure_data_files():
@@ -103,7 +103,7 @@ def admin_required(f):
     @wraps(f)
     def wrapped(*args, **kwargs):
         user = get_current_user()
-        admin_email = os.environ.get("ADMIN_EMAIL","").lower()
+        admin_email = os.environ.get("ADMIN_EMAIL", "bendiaz620@gmail.com").lower()
         if not user or user.get("email","").lower() != admin_email:
             flash("Admin access required.", "danger")
             return redirect(url_for("index"))

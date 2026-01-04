@@ -4,7 +4,7 @@
 <p>Below are sample projects. Customers can upload examples (images or short mp4 videos). Uploaded items will appear after admin approval.</p>
 
 <div class="row mb-4">
-  {% for ex in examples %}
+  {% for ex in examples if ex.approved %}
     <div class="col-md-4 mb-3">
       <div class="card">
         {% if ex.processing %}

@@ -63,7 +63,7 @@
           <span class="badge bg-warning text-dark">Pending</span>
         {% endif %}
         {% if e.processing_error %}
-          <div class="text-danger small mt-1">{{ e.processing_error }}</div>
+          <div class="text-danger small mt-1">Error: {{ e.processing_error }}</div>
         {% endif %}
       </td>
       <td>
